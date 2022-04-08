@@ -6,12 +6,19 @@ from aws_cdk import (
     aws_iam as iam,
     aws_ecs_patterns as ecs_patterns,
     core,
+    aws_s3 as s3
 )
 
 class BoboExplorerStack(core.Stack):
 
     def __init__(self, scope: core.Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
+
+        s3_bucket = s3.Bucket.from_bucket_name(
+            self,
+            "bobo-bucket",
+            bucket_name="boboserverstack-boboserviceboboa67afcbb-1vv76sne2db6j",
+        )
 
         # Create a VPC
         vpc = ec2.Vpc(
@@ -25,7 +32,7 @@ class BoboExplorerStack(core.Stack):
 
         # Add an AutoScalingGroup with spot instances to the existing cluster
         cluster.add_capacity("AsgSpot",
-            max_capacity=2,
+            max_capacity=6,
             min_capacity=1,
             desired_capacity=2,
             instance_type=ec2.InstanceType("t2.micro"),
@@ -41,19 +48,19 @@ class BoboExplorerStack(core.Stack):
         fargate_service = ecs_patterns.ApplicationLoadBalancedFargateService(
             self, "christiansFargateService",
             cluster=cluster,            # Required
-            cpu=256,                    # Default is 256 (512 is 0.5 vCPU)
+            cpu=512,                    # Default is 256 (512 is 0.5 vCPU)
             desired_count=1,            # Default is 1
             task_image_options=ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
                 image=image, 
                 container_port=8501,
                 ),
-            memory_limit_mib=512,      # Default is 512
+            memory_limit_mib=1024,      # Default is 512
             public_load_balancer=True)  # Default is True
 
         # Add policies to task role
         fargate_service.task_definition.add_to_task_role_policy(iam.PolicyStatement(
             effect=iam.Effect.ALLOW,
-            actions = ["comprehend:*"],
+            actions = ["comprehend:*", "s3:*",],
             resources = ["*"],
             )
         )
@@ -68,3 +75,5 @@ class BoboExplorerStack(core.Stack):
             scale_in_cooldown=core.Duration.seconds(60),
             scale_out_cooldown=core.Duration.seconds(60),
         )
+        
+        s3_bucket.grant_read_write(fargate_service.task_definition.task_role)

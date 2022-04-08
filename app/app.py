@@ -1,25 +1,18 @@
 import streamlit as st
-<<<<<<< HEAD
 import os, json
 import pandas as pd
 import numpy as np
 import glob
 import altair as alt
 import time
-=======
-from site_config import site_config
->>>>>>> c5733ca22e9dc31bd98bfa8063230eb9e36e2b68
 
 pd.set_option('display.max_columns', None)
 
 path_to_json = './data' 
 
-<<<<<<< HEAD
+
 json_pattern = os.path.join(path_to_json,'*.json')
 file_list = glob.glob(json_pattern)
-=======
-site_config()
->>>>>>> c5733ca22e9dc31bd98bfa8063230eb9e36e2b68
 
 dfs = [] # an empty list to store the data frames
 for file in file_list:

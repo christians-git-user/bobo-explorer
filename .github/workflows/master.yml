@@ -5,8 +5,8 @@ name: CI
 # Controls when the action will run. 
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
-  # push:
-  #   branches: [ master ]
+  push:
+    branches: [ master ]
   # pull_request:
   #   branches: [ master ]
 
@@ -26,7 +26,7 @@ jobs:
         uses: youyo/aws-cdk-github-actions@v2
         with:
           cdk_subcommand: 'deploy'
-          cdk_stack: 'ai-survival-guide'
+          cdk_stack: 'bobo-explorer'
           cdk_args: '--require-approval never'
           actions_comment: false
         env:

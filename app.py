@@ -2,10 +2,10 @@
 
 from aws_cdk import core
 
-from bobo_explorer.bobo_explorer_stack import AiSurvivalGuideStack
+from bobo_explorer.bobo_explorer_stack import BoboExplorerStack
 
 
 app = core.App()
-BoboExplorerStack(app, "bobo_explorer")
+BoboExplorerStack(app, "bobo-explorer")
 
 app.synth()
