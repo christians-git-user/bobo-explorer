@@ -1,4 +1,4 @@
-# import pandas as pd
+import pandas as pd
 import boto3
 
 def load_data():
@@ -18,14 +18,16 @@ def load_data():
     # open the file object and read it into the variable filedata. 
     filedata = fileobj['Body'].read()
 
-    # file data will be a binary stream.  We have to decode it 
-    contents = filedata.decode('utf-8') 
+    temp = pd.read_parquet(filedata)
 
-    # Once decoded, you can treat the file as plain text if appropriate 
-    print(contents)
+    # # file data will be a binary stream.  We have to decode it 
+    # contents = filedata.decode('utf-8') 
 
-    # # create day col
-    # temp['date'] = temp['on'].apply(lambda x: x.split('T')[0])
+    # # Once decoded, you can treat the file as plain text if appropriate 
+    # print(contents)
 
-    # # groupby
-    # df_daily = temp.groupby(by='date').count()
+    # create day col
+    temp['date'] = temp['on'].apply(lambda x: x.split('T')[0])
+
+    # groupby
+    df_daily = temp.groupby(by='date').count()
