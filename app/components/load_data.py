@@ -1,4 +1,4 @@
-import pyarrow
+import pyarrow.parquet as pq
 import pandas as pd
 import boto3
 import streamlit as st
@@ -22,7 +22,7 @@ def load_data():
     filedata = fileobj['Body'].read()
     st.write(filedata)
 
-    arrow_dataset = pyarrow.parquet.ParquetDataset('fileobj')
+    arrow_dataset = pq.ParquetDataset('fileobj')
     arrow_table = arrow_dataset.read()
     temp = arrow_table.to_pandas()
 
