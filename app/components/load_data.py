@@ -1,5 +1,7 @@
+import pyarrow
 import pandas as pd
 import boto3
+import streamlit as st
 
 def load_data():
     s3client = boto3.client(
@@ -15,11 +17,17 @@ def load_data():
         Bucket=bucketname,
         Key=file_to_read
         ) 
+    st.write(fileobj)
     # open the file object and read it into the variable filedata. 
     filedata = fileobj['Body'].read()
+    st.write(filedata)
 
-    temp = pd.read_parquet(filedata)
+    arrow_dataset = pyarrow.parquet.ParquetDataset('fileobj')
+    arrow_table = arrow_dataset.read()
+    temp = arrow_table.to_pandas()
 
+    st.write(temp)
+    
     # # file data will be a binary stream.  We have to decode it 
     # contents = filedata.decode('utf-8') 
 
