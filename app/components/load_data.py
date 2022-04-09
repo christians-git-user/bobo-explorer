@@ -2,6 +2,7 @@ import pyarrow.parquet as pq
 import pandas as pd
 import streamlit as st
 import s3fs
+import altair as alt
 
 def load_data():
     bucketname = "boboserverstack-boboserviceboboa67afcbb-1vv76sne2db6j" 
@@ -9,8 +10,6 @@ def load_data():
 
     s3 = s3fs.S3FileSystem()
     temp = pq.read_table(f"s3://{bucketname}/{file_to_read}", filesystem=s3).to_pandas()
-
-    st.write(temp)
     
     # # file data will be a binary stream.  We have to decode it 
     # contents = filedata.decode('utf-8') 
@@ -24,4 +23,11 @@ def load_data():
     # groupby
     df_daily = temp.groupby(by='date').count()
 
+    st.subheader('Visualizations')
+    st.altair_chart(alt.Chart(df_daily.reset_index()).mark_bar().encode(
+        x='date',
+        y='on'
+    ))
+
+    st.subheader('Explore Daily Counts')
     st.write(df_daily)
